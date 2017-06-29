@@ -1,38 +1,9 @@
-public class Calendar {
-    private static String GetANSI_StringCodeColour(String chooseсolour) {
-        final char EscCode = 27;
-        String ANSI_codeColour = EscCode + "[0m";
-        switch (chooseсolour) {
-            case "Black":
-                ANSI_codeColour = EscCode + "[30m";
-                break;
-            case "Red":
-                ANSI_codeColour = EscCode + "[31m";
-                break;
-            case "Green":
-                ANSI_codeColour = EscCode + "[32m";
-                break;
-            case "Yellow":
-                ANSI_codeColour = EscCode + "[33m";
-                break;
-            case "Blue":
-                ANSI_codeColour = EscCode + "[34m";
-                break;
-            case "Purple":
-                ANSI_codeColour = EscCode + "[35m";
-                break;
-            case "Cyan":
-                ANSI_codeColour = EscCode + "[36m";
-                break;
-            case "White":
-                ANSI_codeColour = EscCode + "[37m";
-                break;
-        }
-        return ANSI_codeColour;
-    }
+import Code.CalendarMethods;
 
-    public static void main(String[] incomingArguments) {
-        int ArgsMouns = Integer.parseInt(incomingArguments[0]);
-        System.out.println(GetANSI_StringCodeColour("Cyan") + "Month: " + ArgsMouns);
+public class Calendar {
+    public static void main(String[] ArgsNumber) {
+        CalendarMethods oneMoreCalendarMethods = new CalendarMethods();
+        int NumberOfMonth = Integer.parseInt(ArgsNumber[0]);
+        oneMoreCalendarMethods.DisplayCalendar(NumberOfMonth);
     }
 }
