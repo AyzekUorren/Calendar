@@ -1,9 +1,9 @@
-import Code.CalendarMethods;
+import Code.CalendarHandler;
 
 public class Calendar {
     public static void main(String[] ArgsNumber) {
-        CalendarMethods newCalendar = new CalendarMethods();
+        CalendarHandler newCalendarHandler = new CalendarHandler();
 
-        newCalendar.DisplayCalendar(newCalendar.GetNumberOfMonth(ArgsNumber));
+        newCalendarHandler.DisplayCalendar(newCalendarHandler.GetNumberOfMonth(ArgsNumber));
     }
 }

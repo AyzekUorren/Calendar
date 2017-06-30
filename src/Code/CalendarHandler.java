@@ -1,14 +1,16 @@
 package Code;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.format.TextStyle;
+import java.time.temporal.TemporalAdjusters;
 import java.util.Locale;
 
-public class CalendarMethods implements InterfaceForCalendar {
+public class CalendarHandler implements InterfaceForCalendar {
     private static String GetANSI_StringCodeColour(String chooseсolour) {
         final char EscCode = 27;
-        String ANSI_codeColour = EscCode + "[0m";
+        String ANSI_codeColour = null;
         switch (chooseсolour) {
             case "Black":
                 ANSI_codeColour = EscCode + "[30m";
@@ -34,7 +36,11 @@ public class CalendarMethods implements InterfaceForCalendar {
             case "White":
                 ANSI_codeColour = EscCode + "[37m";
                 break;
+            case "Reset":
+                ANSI_codeColour = EscCode + "[0m";
+                break;
         }
+        
         return ANSI_codeColour;
     }
 
@@ -59,8 +65,10 @@ public class CalendarMethods implements InterfaceForCalendar {
             throw new IllegalArgumentException();
         }
         LocalDate today = LocalDate.now();
+        LocalDate NewDay = LocalDate.of(today.getYear(), SelectedMonth, today.getDayOfMonth());
+        System.out.println(NewDay.with(TemporalAdjusters.firstInMonth(DayOfWeek.MONDAY)));
         Month month = Month.of(SelectedMonth);
         month.length(today.isLeapYear());
-        System.out.println("Month: " + month.getDisplayName(TextStyle.FULL, Locale.forLanguageTag("uk_UA")));
+        System.out.println(GetANSI_StringCodeColour("Red") + "Month: " + month.getDisplayName(TextStyle.FULL, Locale.forLanguageTag("uk_UA")) + GetANSI_StringCodeColour("Reset"));
     }
 }
