@@ -59,16 +59,31 @@ public class CalendarHandler implements InterfaceForCalendar {
         return NumberOfMonth;
     }
 
+    private LocalDate GetFirstSelectedDayOfMonth(int SelectedMonth, int NumberDayOfWeek) throws IllegalArgumentException{
+        if (NumberDayOfWeek < 1 || NumberDayOfWeek > 7) {
+            throw new IllegalArgumentException();
+        }
+        DayOfWeek[] ArrayDaysOfWeek = {null, DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY, DayOfWeek.SATURDAY, DayOfWeek.SUNDAY};
+        LocalDate today = LocalDate.now();
+        LocalDate todayInSelectedMonth = LocalDate.of(today.getYear(), SelectedMonth, today.getDayOfMonth());
+
+        return todayInSelectedMonth.with(TemporalAdjusters.firstInMonth(ArrayDaysOfWeek[NumberDayOfWeek]));
+    }
+
+    private int GetLengthOfMonth(int SelectedMonth) {
+        LocalDate today = LocalDate.now();
+
+        return Month.of(SelectedMonth).length(today.isLeapYear());
+    }
+
     @Override
     public void DisplayCalendar(int SelectedMonth) throws IllegalArgumentException{
         if (SelectedMonth > 12 || SelectedMonth < 1) {
             throw new IllegalArgumentException();
         }
-        LocalDate today = LocalDate.now();
-        LocalDate NewDay = LocalDate.of(today.getYear(), SelectedMonth, today.getDayOfMonth());
-        System.out.println(NewDay.with(TemporalAdjusters.firstInMonth(DayOfWeek.MONDAY)));
+        System.out.println(GetFirstSelectedDayOfMonth(SelectedMonth, 1));
         Month month = Month.of(SelectedMonth);
-        month.length(today.isLeapYear());
         System.out.println(GetANSI_StringCodeColour("Red") + "Month: " + month.getDisplayName(TextStyle.FULL, Locale.forLanguageTag("uk_UA")) + GetANSI_StringCodeColour("Reset"));
+        System.out.println("Month have a " + GetLengthOfMonth(SelectedMonth) + " days");
     }
 }
