@@ -1,5 +1,10 @@
 package Code;
 
+import java.time.LocalDate;
+import java.time.Month;
+import java.time.format.TextStyle;
+import java.util.Locale;
+
 public class CalendarMethods implements InterfaceForCalendar {
     private static String GetANSI_StringCodeColour(String chooseсolour) {
         final char EscCode = 27;
@@ -33,11 +38,29 @@ public class CalendarMethods implements InterfaceForCalendar {
         return ANSI_codeColour;
     }
 
+    private int GetCurrentMonth(){
+        LocalDate today = LocalDate.now();
+        return today.getMonthValue();
+    }
+
+    public int GetNumberOfMonth(String[] ArgumentsConsole){
+        int NumberOfMonth;
+        if (ArgumentsConsole.length != 0) {
+            NumberOfMonth = Integer.parseInt(ArgumentsConsole[0]);
+        } else  {
+            NumberOfMonth = this.GetCurrentMonth();
+        }
+        return NumberOfMonth;
+    }
+
     @Override
     public void DisplayCalendar(int SelectedMonth) throws IllegalArgumentException{
         if (SelectedMonth > 12 || SelectedMonth < 1) {
             throw new IllegalArgumentException();
         }
-        System.out.println(GetANSI_StringCodeColour("Cyan") + "Month: " + SelectedMonth);
+        LocalDate today = LocalDate.now();
+        Month month = Month.of(SelectedMonth);
+        month.length(today.isLeapYear());
+        System.out.println("Month: " + month.getDisplayName(TextStyle.FULL, Locale.forLanguageTag("uk_UA")));
     }
 }
