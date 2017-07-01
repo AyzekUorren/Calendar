@@ -80,7 +80,7 @@ public class CalendarHandler implements InterfaceForCalendar {
         int dayNumberOfMonth = 1;
         int weekNumber = 1;
         List<ListOfDay> currentWeek = new ArrayList<ListOfDay>() {};
-        if (firstDayOfWeek > 1){
+        if (firstDayOfWeek > 0){
             for(int indexEmptyDay = 0; indexEmptyDay < firstDayOfWeek; indexEmptyDay++){
                 currentWeek.add(new ListOfDay(0, ArrayofDaysShortNames[indexEmptyDay], weekNumber));
             }
@@ -183,7 +183,6 @@ public class CalendarHandler implements InterfaceForCalendar {
         Month month = Month.of(selectedMonth);
         List<ListOfDay> CalendarList = createWeekOfDays(numberFirstDayofWeekInMonth, GetLengthOfMonth(selectedMonth));
 
-        System.out.println("First Monday in selected Month: " + getFirstSelectedDayOfMonth(selectedMonth, 1));
         System.out.println(getANSIStringCodeColour("Yellow") + "Month: " + month.getDisplayName(TextStyle.FULL, Locale.forLanguageTag("uk_UA")) + getANSIStringCodeColour("Reset"));
         System.out.println();
         printTableCalendar(CalendarList);
