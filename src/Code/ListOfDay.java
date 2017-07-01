@@ -1,6 +1,6 @@
 package Code;
 
-public class ListOfDay {
+class ListOfDay {
     private int Day;
     private String DayOfWeek;
     private int NumberOfWeek;
@@ -10,15 +10,15 @@ public class ListOfDay {
         this.NumberOfWeek = NumberOfWeek;
     }
 
-    public int getDay() {
+    int getDay() {
         return Day;
     }
 
-    public String getDayOfWeek() {
+    String getDayOfWeek() {
         return DayOfWeek;
     }
 
-    public int getNumberOfWeek() {
+    int getNumberOfWeek() {
         return NumberOfWeek;
     }
 }
