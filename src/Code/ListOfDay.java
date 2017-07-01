@@ -1,24 +1,24 @@
 package Code;
 
 class ListOfDay {
-    private int Day;
-    private String DayOfWeek;
-    private int NumberOfWeek;
-    ListOfDay(int Day, String DayOfWeek, int NumberOfWeek){
-        this.Day = Day;
-        this.DayOfWeek = DayOfWeek;
-        this.NumberOfWeek = NumberOfWeek;
+    private int dayNumber;
+    private String dayShortName;
+    private int numberOfWeek;
+    ListOfDay(int dayNumber, String dayShortName, int numberOfWeek){
+        this.dayNumber = dayNumber;
+        this.dayShortName = dayShortName;
+        this.numberOfWeek = numberOfWeek;
     }
 
-    int getDay() {
-        return Day;
+    int getDayNumber() {
+        return dayNumber;
     }
 
-    String getDayOfWeek() {
-        return DayOfWeek;
+    String getDayShortName() {
+        return dayShortName;
     }
 
     int getNumberOfWeek() {
-        return NumberOfWeek;
+        return numberOfWeek;
     }
 }
