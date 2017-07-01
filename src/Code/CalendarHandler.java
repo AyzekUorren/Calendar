@@ -26,7 +26,7 @@ public class CalendarHandler implements InterfaceForCalendar {
         for (ListOfDay currentDay : CalendarList) {
             if (currentnumberWeek < currentDay.getNumberOfWeek()) {
                 currentnumberWeek = currentDay.getNumberOfWeek();
-                System.out.println();
+                System.out.print("\n\n");
             }
             switch (checkStateSelectedDay(currentDay)) {
                 case "Weekend": {
@@ -173,15 +173,22 @@ public class CalendarHandler implements InterfaceForCalendar {
         return Month.of(selectedMonth).length(today.isLeapYear());
     }
 
+    private int getFirsMondayOfMonth(int selectedMonth){
+        int firstDayAfterFirstMonday = getFirstSelectedDayOfMonth(selectedMonth, 1).getDayOfMonth() - 1;
+        int numberFirstDayofWeekInMonth = 0;
+        if (firstDayAfterFirstMonday != 0) {
+            numberFirstDayofWeekInMonth = 7 - firstDayAfterFirstMonday;
+        }
+        return numberFirstDayofWeekInMonth;
+    }
+
     @Override
     public void DisplayCalendar(int selectedMonth) throws IllegalArgumentException{
         if (selectedMonth > 12 || selectedMonth < 1) {
             throw new IllegalArgumentException();
         }
-
-        int numberFirstDayofWeekInMonth = 7 - (getFirstSelectedDayOfMonth(selectedMonth, 1).getDayOfMonth() - 1);
         Month month = Month.of(selectedMonth);
-        List<ListOfDay> CalendarList = createWeekOfDays(numberFirstDayofWeekInMonth, GetLengthOfMonth(selectedMonth));
+        List<ListOfDay> CalendarList = createWeekOfDays(getFirsMondayOfMonth(selectedMonth), GetLengthOfMonth(selectedMonth));
 
         System.out.println(getANSIStringCodeColour("Yellow") + "Month: " + month.getDisplayName(TextStyle.FULL, Locale.forLanguageTag("uk_UA")) + getANSIStringCodeColour("Reset"));
         System.out.println();
