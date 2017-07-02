@@ -10,12 +10,27 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
-public class CalendarHandler implements InterfaceForCalendar {
+public class CalendarHandler implements CalendarInterface {
 
     private int selectedMonth;
 
-    CalendarHandler(int chooseMonth){
-        setSelectedMonth(chooseMonth);
+    public CalendarHandler(String[] argumentsConsole){
+        setSelectedMonth(getNumberOfMonth(argumentsConsole));
+    }
+
+    private int getNumberOfMonth(String[] argumentsConsole){
+        int numberOfMonth;
+        if (argumentsConsole.length != 0) {
+            numberOfMonth = Integer.parseInt(argumentsConsole[0]);
+        } else  {
+            numberOfMonth = this.getCurrentMonth();
+        }
+        return numberOfMonth;
+    }
+
+    private int getCurrentMonth(){
+        LocalDate today = LocalDate.now();
+        return today.getMonthValue();
     }
 
     private void printTableCalendar(List<ListOfDay> CalendarList){
@@ -143,21 +158,6 @@ public class CalendarHandler implements InterfaceForCalendar {
         }
         
         return ANSI_codeColour;
-    }
-
-    private int getCurrentMonth(){
-        LocalDate today = LocalDate.now();
-        return today.getMonthValue();
-    }
-
-    public int getNumberOfMonth(String[] argumentsConsole){
-        int numberOfMonth;
-        if (argumentsConsole.length != 0) {
-            numberOfMonth = Integer.parseInt(argumentsConsole[0]);
-        } else  {
-            numberOfMonth = this.getCurrentMonth();
-        }
-        return numberOfMonth;
     }
 
     private LocalDate getFirstSelectedDayOfMonth(int selectedMonth, int numberDayOfWeek) throws IllegalArgumentException{

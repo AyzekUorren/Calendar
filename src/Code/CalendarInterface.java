@@ -1,5 +1,5 @@
 package Code;
 
-public interface InterfaceForCalendar {
+interface CalendarInterface {
     void DisplayCalendar() throws IllegalArgumentException;
 }
