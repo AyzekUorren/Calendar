@@ -5,7 +5,10 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.time.format.TextStyle;
 import java.time.temporal.TemporalAdjusters;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
 
 public class CalendarHandler implements InterfaceForCalendar {
 
@@ -182,16 +185,21 @@ public class CalendarHandler implements InterfaceForCalendar {
         return numberFirstDayofWeekInMonth;
     }
 
+    private void printFullNameOfMonth(int selectedMonth) {
+        Month month = Month.of(selectedMonth);
+        System.out.println(getANSIStringCodeColour("Yellow") + "Month: " + month.getDisplayName(TextStyle.FULL, Locale.forLanguageTag("uk_UA")) + getANSIStringCodeColour("Reset"));
+        System.out.println();
+    }
+
     @Override
     public void DisplayCalendar(int selectedMonth) throws IllegalArgumentException{
         if (selectedMonth > 12 || selectedMonth < 1) {
             throw new IllegalArgumentException();
         }
-        Month month = Month.of(selectedMonth);
+
         List<ListOfDay> CalendarList = createWeekOfDays(getFirsMondayOfMonth(selectedMonth), GetLengthOfMonth(selectedMonth));
 
-        System.out.println(getANSIStringCodeColour("Yellow") + "Month: " + month.getDisplayName(TextStyle.FULL, Locale.forLanguageTag("uk_UA")) + getANSIStringCodeColour("Reset"));
-        System.out.println();
+        printFullNameOfMonth(selectedMonth);
         printTableCalendar(CalendarList);
     }
 }
