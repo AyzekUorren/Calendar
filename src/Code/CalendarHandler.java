@@ -12,6 +12,12 @@ import java.util.Objects;
 
 public class CalendarHandler implements InterfaceForCalendar {
 
+    private int selectedMonth;
+
+    CalendarHandler(int chooseMonth){
+        setSelectedMonth(chooseMonth);
+    }
+
     private void printTableCalendar(List<ListOfDay> CalendarList){
         String[] arrayofDaysShort = new String[]{"Mon", "Tue", "Wed", "Thu", "Fri", "Sat" , "Sun"};
         int currentnumberWeek = 0;
@@ -185,21 +191,29 @@ public class CalendarHandler implements InterfaceForCalendar {
         return numberFirstDayofWeekInMonth;
     }
 
-    private void printFullNameOfMonth(int selectedMonth) {
-        Month month = Month.of(selectedMonth);
+    private void printFullNameOfMonth() {
+        Month month = Month.of(getSelectedMonth());
         System.out.println(getANSIStringCodeColour("Yellow") + "Month: " + month.getDisplayName(TextStyle.FULL, Locale.forLanguageTag("uk_UA")) + getANSIStringCodeColour("Reset"));
         System.out.println();
     }
 
+    private void setSelectedMonth(int selectedMonth) {
+        this.selectedMonth = selectedMonth;
+    }
+
+    private int getSelectedMonth(){
+        return this.selectedMonth;
+    }
+
     @Override
-    public void DisplayCalendar(int selectedMonth) throws IllegalArgumentException{
-        if (selectedMonth > 12 || selectedMonth < 1) {
+    public void DisplayCalendar() throws IllegalArgumentException{
+        if (getSelectedMonth() > 12 || getSelectedMonth() < 1) {
             throw new IllegalArgumentException();
         }
 
-        List<ListOfDay> CalendarList = createWeekOfDays(getFirsMondayOfMonth(selectedMonth), GetLengthOfMonth(selectedMonth));
+        List<ListOfDay> CalendarList = createWeekOfDays(getFirsMondayOfMonth(getSelectedMonth()), GetLengthOfMonth(getSelectedMonth()));
 
-        printFullNameOfMonth(selectedMonth);
+        printFullNameOfMonth();
         printTableCalendar(CalendarList);
     }
 }
