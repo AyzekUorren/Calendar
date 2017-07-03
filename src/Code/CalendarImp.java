@@ -1,5 +1,5 @@
 package Code;
 
-interface CalendarInterface {
+interface CalendarImp {
     void DisplayCalendar() throws IllegalArgumentException;
 }
