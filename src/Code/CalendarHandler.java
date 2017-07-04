@@ -182,7 +182,7 @@ public class CalendarHandler implements CalendarImp {
         return Month.of(selectedMonth).length(today.isLeapYear());
     }
 
-    private int getFirstMondayOfMonth(int selectedMonth){
+    private int getFirstDayBeforeMondayOfMonth(int selectedMonth){
         int firstDayAfterFirstMonday = getFirstSelectedDayOfMonth(selectedMonth, 1).getDayOfMonth() - 1;
         int numberFirstDayofWeekInMonth = 0;
         if (firstDayAfterFirstMonday != 0) {
@@ -211,7 +211,7 @@ public class CalendarHandler implements CalendarImp {
             throw new IllegalArgumentException();
         }
 
-        List<ListOfDay> CalendarList = createWeekOfDays(getFirstMondayOfMonth(getSelectedMonth()), GetLengthOfMonth(getSelectedMonth()));
+        List<ListOfDay> CalendarList = createWeekOfDays(getFirstDayBeforeMondayOfMonth(getSelectedMonth()), GetLengthOfMonth(getSelectedMonth()));
 
         printFullNameOfMonth();
         printTableCalendar(CalendarList);
