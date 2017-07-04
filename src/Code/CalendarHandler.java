@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
-public class CalendarHandler implements CalendarInterface {
+public class CalendarHandler implements CalendarImp {
 
     private int selectedMonth;
 
@@ -182,7 +182,7 @@ public class CalendarHandler implements CalendarInterface {
         return Month.of(selectedMonth).length(today.isLeapYear());
     }
 
-    private int getFirsMondayOfMonth(int selectedMonth){
+    private int getFirstMondayOfMonth(int selectedMonth){
         int firstDayAfterFirstMonday = getFirstSelectedDayOfMonth(selectedMonth, 1).getDayOfMonth() - 1;
         int numberFirstDayofWeekInMonth = 0;
         if (firstDayAfterFirstMonday != 0) {
@@ -211,7 +211,7 @@ public class CalendarHandler implements CalendarInterface {
             throw new IllegalArgumentException();
         }
 
-        List<ListOfDay> CalendarList = createWeekOfDays(getFirsMondayOfMonth(getSelectedMonth()), GetLengthOfMonth(getSelectedMonth()));
+        List<ListOfDay> CalendarList = createWeekOfDays(getFirstMondayOfMonth(getSelectedMonth()), GetLengthOfMonth(getSelectedMonth()));
 
         printFullNameOfMonth();
         printTableCalendar(CalendarList);
