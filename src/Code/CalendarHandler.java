@@ -78,6 +78,7 @@ public class CalendarHandler implements CalendarImp {
                 }
             }
         }
+        System.out.print("\n");
     }
 
     private String checkStateSelectedDay(ListOfDay selectedDay){
