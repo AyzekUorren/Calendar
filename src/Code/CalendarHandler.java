@@ -1,137 +1,138 @@
 package Code;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.Month;
+import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
-import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
 
-public class CalendarHandler implements CalendarImp {
+public class CalendarHandler implements CalendarInterface{
+    private LocalDate selectedMonthDate;
+    private List<LocalDate> ListOfDays = null;
 
-    private int selectedMonth;
+    public CalendarHandler(String[] ArgsNumber){
+        setSelectedMonthDate(getNumberOfMonth(ArgsNumber));
+    }
 
-    public CalendarHandler(String[] argumentsConsole){
-        setSelectedMonth(getNumberOfMonth(argumentsConsole));
+    private LocalDate getSelectedMonthDate() {
+        return selectedMonthDate;
+    }
+
+    private void setSelectedMonthDate(int selectedMonthNumber) {
+        LocalDate todayDate = LocalDate.now();
+        LocalDate selectedDate = LocalDate.of(todayDate.getYear(), selectedMonthNumber, 1);
+        int lengthTodayMonth = todayDate.getMonth().length(todayDate.isLeapYear());
+        int lengthSelectedMonth = selectedDate.getMonth().length(todayDate.isLeapYear());
+
+        if(lengthTodayMonth < lengthSelectedMonth){
+            selectedDate = LocalDate.of(todayDate.getYear(), selectedMonthNumber, todayDate.getDayOfMonth());
+        }
+
+        this.selectedMonthDate = selectedDate;
     }
 
     private int getNumberOfMonth(String[] argumentsConsole){
         int numberOfMonth;
+        LocalDate today = LocalDate.now();
         if (argumentsConsole.length != 0) {
             numberOfMonth = Integer.parseInt(argumentsConsole[0]);
         } else  {
-            numberOfMonth = this.getCurrentMonth();
+            numberOfMonth = today.getMonthValue();
         }
         return numberOfMonth;
     }
 
-    private int getCurrentMonth(){
-        LocalDate today = LocalDate.now();
-        return today.getMonthValue();
+    private void printFullNameOfMonth() {
+        System.out.println(getANSIStringCodeColour("Yellow") + "Month: " +
+                getSelectedMonthDate().getMonth().getDisplayName(TextStyle.FULL, Locale.forLanguageTag("uk_UA")) +
+                getANSIStringCodeColour("Reset"));
     }
 
-    private void printTableCalendar(List<ListOfDay> CalendarList){
-        String[] arrayofDaysShort = new String[]{"Mon", "Tue", "Wed", "Thu", "Fri", "Sat" , "Sun"};
-        int currentnumberWeek = 0;
+    private List<LocalDate> createListOfDays(){
+        LocalDate currentDayOfMonth = LocalDate.of(getSelectedMonthDate().getYear(), getSelectedMonthDate().getMonth(), 1);
+        List<LocalDate> DaysOfMonth = new ArrayList<LocalDate>() {};
+        DaysOfMonth.add(currentDayOfMonth);
 
-        for (int indexOfDay = 0; indexOfDay < 7; indexOfDay++){
-            if (Objects.equals(arrayofDaysShort[indexOfDay], "Sat") || Objects.equals(arrayofDaysShort[indexOfDay], "Sun")){
-                System.out.print(getANSIStringCodeColour("Red"));
-                System.out.format("%9s", arrayofDaysShort[indexOfDay]);
-                System.out.print(getANSIStringCodeColour("Reset"));
-            } else {
-                System.out.format("%9s", arrayofDaysShort[indexOfDay]);
+        int numberDayOfCurrentMonth = currentDayOfMonth.getDayOfMonth();
+        int lengthSelectedMonth = currentDayOfMonth.getMonth().length(currentDayOfMonth.isLeapYear());
+
+
+        while (numberDayOfCurrentMonth + 1 < lengthSelectedMonth){
+            currentDayOfMonth = LocalDate.of(currentDayOfMonth.getYear(), currentDayOfMonth.getMonth(), currentDayOfMonth.getDayOfMonth() + 1);
+            numberDayOfCurrentMonth = currentDayOfMonth.getDayOfMonth();
+            DaysOfMonth.add(currentDayOfMonth);
+        }
+        return DaysOfMonth;
+    }
+
+    private void PrintCalendar(){
+        System.out.format("%9s%9s%9s%9s%9s", "Mon","Tue","Wed","Thu","Fri");
+        System.out.print(getANSIStringCodeColour("Red"));
+        System.out.format("%9s%9s","Sat","Sun");
+        System.out.println("\n" + getANSIStringCodeColour("Reset"));
+
+        int EmptyDays = getNumberDaysBeforeFirstDayMonth(getListOfDays().get(0));
+        if(EmptyDays > 0) {
+            for (int IndexDay = 1; IndexDay <= EmptyDays; IndexDay++){
+                System.out.format("%9s", "");
             }
         }
 
-        for (ListOfDay currentDay : CalendarList) {
-            if (currentnumberWeek < currentDay.getNumberOfWeek()) {
-                currentnumberWeek = currentDay.getNumberOfWeek();
-                System.out.print("\n\n");
-            }
-            switch (checkStateSelectedDay(currentDay)) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("       dd");
+        for (LocalDate currentDate : getListOfDays()) {
+
+            switch (checkStateSelectedDay(currentDate)) {
                 case "Weekend": {
-                    System.out.format("%7s", "");
                     System.out.print(getANSIStringCodeColour("Red"));
-                    System.out.format("%02d", currentDay.getDayNumber());
-                    System.out.print(getANSIStringCodeColour("Reset"));
                     break;
                 }
                 case "Today":{
-                    System.out.format("%7s", "");
                     System.out.print(getANSIStringCodeColour("Green"));
-                    System.out.format("%02d", currentDay.getDayNumber());
-                    System.out.print(getANSIStringCodeColour("Reset"));
                     break;
                 }
                 case "SimpleDay":{
-                    System.out.format("%7s", "");
-                    System.out.format("%02d", currentDay.getDayNumber());
-                    break;
-                }
-                case "EmptyDay":{
-                    System.out.format("%9s", "");
+                    System.out.print(getANSIStringCodeColour("Reset"));
                     break;
                 }
             }
+
+            System.out.print(formatter.format(currentDate));
+            if (currentDate.getDayOfWeek().getValue() == 7){
+                System.out.print("\n\n");
+            }
         }
-        System.out.print("\n");
     }
 
-    private String checkStateSelectedDay(ListOfDay selectedDay){
+    private int getNumberDaysBeforeFirstDayMonth(LocalDate firstDayOnMonth){
+        int numberDaysBeforeFirstDay = firstDayOnMonth.getDayOfWeek().getValue();
+        if (numberDaysBeforeFirstDay > 1) {
+            numberDaysBeforeFirstDay = numberDaysBeforeFirstDay - 1;
+        } else numberDaysBeforeFirstDay = 0;
+        return numberDaysBeforeFirstDay;
+    }
+
+    private String checkStateSelectedDay(LocalDate selectedDay){
         String stateSelectedDay;
         int todayNumber = LocalDate.now().getDayOfMonth();
-        if ((Objects.equals(selectedDay.getDayShortName(), "Sat") ||
-                Objects.equals(selectedDay.getDayShortName(), "Sun")) &&
-                selectedDay.getDayNumber() != todayNumber &&
-                selectedDay.getDayNumber() != 0)
+
+        if ((selectedDay.getDayOfWeek().getValue() >= 6) &&
+                selectedDay.getDayOfMonth() != todayNumber)
         {
             stateSelectedDay = "Weekend";
-        } else if (selectedDay.getDayNumber() == todayNumber) {
+        } else if (selectedDay.getDayOfMonth() == todayNumber) {
             stateSelectedDay = "Today";
-        } else if(selectedDay.getDayNumber() == 0){
-            stateSelectedDay = "EmptyDay";
         } else {
             stateSelectedDay = "SimpleDay";
         }
         return stateSelectedDay;
     }
 
-    private List<ListOfDay> createWeekOfDays(int firstDayOfWeek, int lengthOfMonth){
-        String[] ArrayofDaysShortNames = new String[]{"Mon", "Tue", "Wed", "Thu", "Fri", "Sat" , "Sun"};
-        int dayNumberOfMonth = 1;
-        int weekNumber = 1;
-        List<ListOfDay> currentWeek = new ArrayList<ListOfDay>() {};
-        if (firstDayOfWeek > 0){
-            for(int indexEmptyDay = 0; indexEmptyDay < firstDayOfWeek; indexEmptyDay++){
-                currentWeek.add(new ListOfDay(0, ArrayofDaysShortNames[indexEmptyDay], weekNumber));
-            }
-        }
-        while (dayNumberOfMonth < lengthOfMonth){
-            for (int indexOfDay = firstDayOfWeek; indexOfDay < 7; indexOfDay++) {
-                if(dayNumberOfMonth <= lengthOfMonth) {
-                    currentWeek.add(new ListOfDay(dayNumberOfMonth, ArrayofDaysShortNames[indexOfDay], weekNumber));
-                    dayNumberOfMonth++;
-                } else {
-                    currentWeek.add(new ListOfDay(0, ArrayofDaysShortNames[indexOfDay], weekNumber));
-                }
-            }
-            weekNumber++;
-            firstDayOfWeek = 0;
-        }
-        return currentWeek;
-    }
 
     private static String getANSIStringCodeColour(String chooseсolour) {
         final char EscCode = 27;
         String ANSI_codeColour = null;
         switch (chooseсolour) {
-            case "Black":
-                ANSI_codeColour = EscCode + "[30m";
-                break;
             case "Red":
                 ANSI_codeColour = EscCode + "[31m";
                 break;
@@ -141,80 +142,25 @@ public class CalendarHandler implements CalendarImp {
             case "Yellow":
                 ANSI_codeColour = EscCode + "[33m";
                 break;
-            case "Blue":
-                ANSI_codeColour = EscCode + "[34m";
-                break;
-            case "Purple":
-                ANSI_codeColour = EscCode + "[35m";
-                break;
-            case "Cyan":
-                ANSI_codeColour = EscCode + "[36m";
-                break;
-            case "White":
-                ANSI_codeColour = EscCode + "[37m";
-                break;
             case "Reset":
                 ANSI_codeColour = EscCode + "[0m";
                 break;
         }
-        
         return ANSI_codeColour;
     }
 
-    private LocalDate getFirstSelectedDayOfMonth(int selectedMonth, int numberDayOfWeek) throws IllegalArgumentException{
-        if (numberDayOfWeek < 1 || numberDayOfWeek > 7) {
-            throw new IllegalArgumentException();
-        }
-        DayOfWeek[] arrayDaysOfWeek = {null, DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY, DayOfWeek.SATURDAY, DayOfWeek.SUNDAY};
-        LocalDate today = LocalDate.now();
-        int selectedDay = today.getDayOfMonth();
-
-        if (GetLengthOfMonth(selectedMonth) < GetLengthOfMonth(today.getMonthValue())){
-            selectedDay = 1;
-        }
-
-        LocalDate todayInSelectedMonth = LocalDate.of(today.getYear(), selectedMonth, selectedDay);
-        return todayInSelectedMonth.with(TemporalAdjusters.firstInMonth(arrayDaysOfWeek[numberDayOfWeek]));
+    private List<LocalDate> getListOfDays() {
+        return ListOfDays;
     }
 
-    private int GetLengthOfMonth(int selectedMonth) {
-        LocalDate today = LocalDate.now();
-
-        return Month.of(selectedMonth).length(today.isLeapYear());
+    private void setListOfDays(List<LocalDate> listOfDays) {
+        ListOfDays = listOfDays;
     }
 
-    private int getFirstDayBeforeMondayOfMonth(int selectedMonth){
-        int firstDayAfterFirstMonday = getFirstSelectedDayOfMonth(selectedMonth, 1).getDayOfMonth() - 1;
-        int numberFirstDayofWeekInMonth = 0;
-        if (firstDayAfterFirstMonday != 0) {
-            numberFirstDayofWeekInMonth = 7 - firstDayAfterFirstMonday;
-        }
-        return numberFirstDayofWeekInMonth;
-    }
-
-    private void printFullNameOfMonth() {
-        Month month = Month.of(getSelectedMonth());
-        System.out.println(getANSIStringCodeColour("Yellow") + "Month: " + month.getDisplayName(TextStyle.FULL, Locale.forLanguageTag("uk_UA")) + getANSIStringCodeColour("Reset"));
-        System.out.println();
-    }
-
-    private void setSelectedMonth(int selectedMonth) {
-        this.selectedMonth = selectedMonth;
-    }
-
-    private int getSelectedMonth(){
-        return this.selectedMonth;
-    }
-
-    @Override
-    public void DisplayCalendar() throws IllegalArgumentException{
-        if (getSelectedMonth() > 12 || getSelectedMonth() < 1) {
-            throw new IllegalArgumentException();
-        }
-
-        List<ListOfDay> CalendarList = createWeekOfDays(getFirstDayBeforeMondayOfMonth(getSelectedMonth()), GetLengthOfMonth(getSelectedMonth()));
-
+    public void DisplayCalendar() {
         printFullNameOfMonth();
-        printTableCalendar(CalendarList);
+        setListOfDays(createListOfDays());
+
+        PrintCalendar();
     }
 }
