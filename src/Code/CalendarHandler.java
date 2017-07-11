@@ -102,6 +102,7 @@ public class CalendarHandler implements CalendarInterface{
                 System.out.print("\n\n");
             }
         }
+        System.out.print(getANSIStringCodeColour("Reset"));
     }
 
     private int getNumberDaysBeforeFirstDayMonth(LocalDate firstDayOnMonth){
